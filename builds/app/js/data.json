@@ -1,0 +1,30 @@
+[
+  {
+    "massageName": "Chi Ming Fa",
+    "customerName": "Hannah Harrod",
+    "aptDate": "2019-01-15 15:30",
+    "aptNotes": "Back Pain"
+  },
+
+  {
+    "massageName": "Feng Shui Corporal",
+    "customerName": "Hassum Yusuf",
+    "aptDate": "2019-01-22 15:30",
+    "aptNotes": "Anxiety"
+  },
+
+  {
+    "massageName": "Cupping",
+    "customerName": "Alicia Lockhart",
+    "aptDate": "2019-02-13 15:30",
+    "aptNotes": "Athete"
+  },
+
+  {
+    "massageName": "Chi Ming Fa",
+    "customerName": "Mary Harkin",
+    "aptDate": "2019-02-09 15:30",
+    "aptNotes": "Relax"
+  }
+
+]
