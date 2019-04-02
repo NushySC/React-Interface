@@ -1,10 +1,16 @@
-import React from 'react'
+import React from 'react';
 
-export default class AptList extends React.Component {
+class AptList extends React.Component{
 
-    handleDelete(){
-        this.props.onDelete(this.props.whichItem)
-    }
+  constructor(props){
+    super(props);
+
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  handleDelete(){
+    this.props.onDelete(this.props.singleItem);
+  }
 
 
     render () {
@@ -28,3 +34,4 @@ export default class AptList extends React.Component {
     
   }
   
+  export default AptList;

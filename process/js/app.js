@@ -1,86 +1,85 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import AptList from './AptList';
-import _ from 'lodash';
-import AddAppointment from './AddAppointment'
+import AddAppointment from './AddAppointment';
+import SearchAppointments from './SearchAppointments';
 
-class MainInterface extends React.Component {
-  //this is equivalent to getInitialState
-  constructor(props) {
+
+
+class MainInterface extends React.Component{
+
+  constructor(props){
     super(props);
-    this.state = {myAppointments: []
+    this.state = {
+      myAppointment: [],
+      aptBodyVisible: false,
+      orderBy: 'aptDate',
+      orderDir: 'desc',
+      query: ''
     };
-    this.state = { aptBodyVisible: false }
 
+    this.deleteMessage = this.deleteMessage.bind(this);
+    this.toggleAddDisplay = this.toggleAddDisplay.bind(this);
+    this.AddItem = this.AddItem.bind(this);
+    this.sortByHandelar = this.sortByHandelar.bind(this);
+    this.sortDirHandelar = this.sortDirHandelar.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
-  componentDidMount() {
-    this.serverRequest= $.get('./js/data.json', function(result){
+  componentDidMount(){
+    this.serverRequest = $.get('./js/data.json', function(result){
       var tempApts = result;
-      this.setState({
-        myAppointments: tempApts
-      });
+      this.setState({myAppointment: tempApts});
     }.bind(this));
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(){
     this.serverRequest.abort();
   }
 
-  deleteMassage(item) {
-    var allApts = this.state.myAppointments;
-    var newApts = _.without(allApts, item);
-    this.setState({
-      myAppointments: newApts
-    });
-
+  deleteMessage(item){
+    console.log(item);
+    this.setState({myAppointment: this.state.myAppointment.filter(value => value !== item)});
   }
 
-  toggleAddDisplay() {
-    var tempVisibility = !this.state.aptBodyVisible;
-    this.setState({
-      aptBodyVisible: tempVisibility
-    });
+  toggleAddDisplay(){
+    this.setState({aptBodyVisible: !this.state.aptBodyVisible});
+  }
+
+  AddItem(item){
+    this.setState({myAppointment: [...this.state.myAppointment, item]})
+  }
+
+  sortByHandelar(value){
+    this.setState({orderBy: value});
+  }
+
+  sortDirHandelar(value){
+    this.setState({orderDir: value});
+  }
+
+  handleSearch(value){
+    this.setState({query: value.toLowerCase()})
   }
 
   render(){
-    // var showTitle;
-    // if (this.state.show) {
-    //   showTitle = 'New';
-    // }
+    const sortValues = this.state.orderDir === 'asc' ? [-1, 1] : this.state.orderDir === 'desc' ? [1, -1] : null;
 
-    // var displayList = {
-    //   display: this.state.show ? 'block': 'none',
-    //   color: 'red'
-    // }
+    const filteredApts = this.state.myAppointment.sort((itemA, itemB) => itemA[this.state.orderBy].toLowerCase() < itemB[this.state.orderBy].toLowerCase() ? sortValues[0] : sortValues[1])
+    .filter(item => !item.massageName.toLowerCase().indexOf(this.state.query) || !item.CustomerName.toLowerCase().indexOf(this.state.query) || !item.aptDate.toLowerCase().indexOf(this.state.query) || !item.aptNotes.toLowerCase().indexOf(this.state.query))
+    .map((value, index) => <AptList key={index} singleItem={value} whichItem={value} onDelete={this.deleteMessage}/>);
 
-    var filteredApts = this.state.myAppointments;
-    filteredApts = filteredApts.map(function(item, index) {
-
-    return (
-      <AptList key ={index}
-      singleItem = { item }
-      whichItem = {item}
-      onDelete = {this.deleteMessage} />
+    return(
+      <div className="interface">
+        <SearchAppointments orderBy={this.state.orderBy} orderDir={this.state.orderDir} sortByHandelar={this.sortByHandelar} sortDirHandelar={this.sortDirHandelar} handleSearch={this.handleSearch}/>
+        <AddAppointment bodyVisible={this.state.aptBodyVisible} handleToggle={this.toggleAddDisplay} addApt={this.AddItem}/>
+        <ul className="item-list media-list">{ filteredApts }</ul>
+      </div>
     )
-  }.bind(this));
+  }
 
-  return (
-<div className="interface">
-<AddAppointment 
-bodyVisible = {this.state.aptBodyVisible }
-handleToggle = { this.toggleAddDisplay}
-/>
-<ul className='item-list media-list'>{filteredApts}
-</ul>
-</div>
-  )
 }
-};
 
 export default MainInterface;
 
-ReactDOM.render(
-  <MainInterface />,
-  document.getElementById('massageAppointments')
-);
+ReactDom.render(<MainInterface/>, document.getElementById("massageAppointments"));

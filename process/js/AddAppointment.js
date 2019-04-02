@@ -1,24 +1,39 @@
-import React from 'react'
+import React from 'react';
 
+class AddAppointment extends React.Component{
 
-class AddAppointment extends React.Component {
-    //this is equivalent to getInitialState
+  constructor(props){
+    super(props);
+    this.toggleAptDisplay = this.toggleAptDisplay.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
+  }
 
-    toggleAptDisplay () {
-        this.props.handleToggle();
-        
+  toggleAptDisplay(){
+    this.props.handleToggle();
+  }
+
+    handleAdd(e){
+        var tempItem = {
+            "massageName": this.refs.inputMassageName.value,
+            "customerName" : this.refs.inputCustomerName.value,
+            "aptDate": this.refs.inputAptDate.value + '' + this.refs.inputAptTime.value,
+            "aptNotes": this.refs.inputAptNotes.value
+        }
+        e.preventDefault();
+        this.props.addApt(data);
     }
 
 
       render() {
-        var displayAptBody = {
+        let displayAptBody = {
             display: this.props.bodyVisible ? 'block' : 'none'   
         };
 
           return (
             <div className="panel panel-primary">
             <div className="panel-heading apt-addheading" onClick={ this.toggleAptDisplay}>
-            <span className="glyphicon glyphicon-plus"></span> Add Appointment</div>
+            <span className="glyphicon glyphicon-plus"></span> Add Appointment
+            </div>
             <div className="panel-body" style={displayAptBody}>
               <form className="add-appointment form-horizontal">
                 <div className="form-group">
@@ -67,6 +82,5 @@ class AddAppointment extends React.Component {
           )
       }
     }
-}
 
 export default AddAppointment;
